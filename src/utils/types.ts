@@ -1,3 +1,5 @@
+import { TFeedsResponse } from '@api';
+
 export type TIngredient = {
   _id: string;
   name: string;
@@ -38,3 +40,32 @@ export type TUser = {
 };
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
+
+export interface IAuthStatus {
+  isInitialized: boolean;
+  isFetching: boolean;
+  user: TUser | null;
+  errorMessage: string | null;
+  isAuthenticated: boolean;
+}
+
+export interface IComponentsState {
+  isFetching: boolean;
+  components: TIngredient[];
+  errorMessage: string | null;
+  constructorElements: {
+    bun: TConstructorIngredient | null;
+    ingredients: TConstructorIngredient[];
+  };
+}
+
+export interface IOrderState {
+  isFetching: boolean;
+  orderList: TOrder[];
+  orderNumber: TOrder | null;
+  feedsResponse: TFeedsResponse | null;
+  errorMessage: string | null;
+  successfulOrder: TOrder | null;
+  isOrderSuccessful: true | false | null;
+  isOrderProcessing: boolean;
+}
