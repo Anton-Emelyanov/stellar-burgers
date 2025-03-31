@@ -1,14 +1,25 @@
 import { FC } from 'react';
-import { Preloader } from '../ui/preloader';
-import { IngredientDetailsUI } from '../ui/ingredient-details';
+import { Preloader } from '@ui';
+import { IngredientDetailsUI } from '@ui';
+import { useParams } from 'react-router-dom';
+import { useSelector } from '../../services/store';
+import { getAllComponents } from '../../slices/burger-constructor-slice';
 
-export const IngredientDetails: FC = () => {
-  /** TODO: взять переменную из стора */
-  const ingredientData = null;
+export const IngredientDetails: FC<{ isPrimary?: boolean }> = ({
+  isPrimary = false
+}) => {
+  const { id } = useParams();
+  const components = useSelector(getAllComponents);
+  const ingredientData = components.find((item) => item._id == id);
 
   if (!ingredientData) {
     return <Preloader />;
   }
 
-  return <IngredientDetailsUI ingredientData={ingredientData} />;
+  return (
+    <IngredientDetailsUI
+      isPrimary={isPrimary}
+      ingredientData={ingredientData}
+    />
+  );
 };
