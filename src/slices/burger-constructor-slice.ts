@@ -35,10 +35,16 @@ const burgerConstructorSlice = createSlice({
       state,
       { payload }: { payload: { ingredient: TIngredient; id: string } }
     ) => {
-      state.constructorElements.bun = createConstructorIngredient(
+      const bun1 = createConstructorIngredient(
         payload.ingredient,
-        payload.id
+        `${payload.id}-top`
       );
+      const bun2 = createConstructorIngredient(
+        payload.ingredient,
+        `${payload.id}-bottom`
+      );
+
+      state.constructorElements.bun = bun1;
     },
     resetBurgerBun: (state) => {
       state.constructorElements.bun = null;

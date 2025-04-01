@@ -49,7 +49,10 @@ const App = () => {
           <Routes location={position || location}>
             <Route path='/' element={<ConstructorPage />} />
             <Route path='/feed' element={<Feed />} />
-            <Route path='/feed/:number' element={<OrderInfo />} />
+            <Route
+              path='/feed/:number'
+              element={<OrderInfo isModal={false} />}
+            />
             <Route
               path='/ingredients/:id'
               element={<IngredientDetails isPrimary />}
@@ -106,7 +109,7 @@ const App = () => {
               path='/profile/orders/:number'
               element={
                 <ProtectedRoute>
-                  <OrderInfo />
+                  <OrderInfo isModal={false} />
                 </ProtectedRoute>
               }
             />
@@ -119,12 +122,11 @@ const App = () => {
                 path='/feed/:number'
                 element={
                   <Modal
-                    title='Информация о заказе'
                     onClose={() => {
                       navigate(-1);
                     }}
                   >
-                    <OrderInfo />
+                    <OrderInfo isModal />
                   </Modal>
                 }
               />
@@ -146,12 +148,11 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <Modal
-                      title='Информация о заказе'
                       onClose={() => {
                         navigate(-1);
                       }}
                     >
-                      <OrderInfo />
+                      <OrderInfo isModal />
                     </Modal>
                   </ProtectedRoute>
                 }

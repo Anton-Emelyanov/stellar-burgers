@@ -4,6 +4,7 @@ import { IngredientDetailsUI } from '@ui';
 import { useParams } from 'react-router-dom';
 import { useSelector } from '../../services/store';
 import { getAllComponents } from '../../slices/burger-constructor-slice';
+import styles from './ingredient-details.module.css';
 
 export const IngredientDetails: FC<{ isPrimary?: boolean }> = ({
   isPrimary = false
@@ -17,9 +18,16 @@ export const IngredientDetails: FC<{ isPrimary?: boolean }> = ({
   }
 
   return (
-    <IngredientDetailsUI
-      isPrimary={isPrimary}
-      ingredientData={ingredientData}
-    />
+    <>
+      {isPrimary && (
+        <div className={`${styles.title} text text_type_main-large`}>
+          Детали ингридиента
+        </div>
+      )}
+      <IngredientDetailsUI
+        isPrimary={isPrimary}
+        ingredientData={ingredientData}
+      />
+    </>
   );
 };

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import styles from './app-header.module.css';
 import { TAppHeaderUIProps } from './type';
 import {
@@ -31,39 +31,40 @@ const MenuItem: FC<{
   path: string;
   icon: any;
   text: string;
-  location?: any;
   userName?: string;
-}> = ({ path, icon, text, location, userName }) => (
-  <Link
-    to={path}
-    className={
-      path === '/feed'
-        ? location.pathname.startsWith(path)
-          ? styles.link_active
-          : styles.link
-        : location.pathname === path
-          ? styles.link_active
-          : styles.link
-    }
-    state={{ from: location }}
-  >
-    {React.createElement(icon, {
-      type:
-        path === '/feed'
-          ? location.pathname.startsWith(path)
-            ? 'primary'
-            : 'disabled'
-          : location.pathname === path
-            ? 'primary'
-            : 'disabled'
-    })}
-    <p className='text text_type_main-default ml-2'>
-      {path === '/profile' ? userName || text : text}
-    </p>
-  </Link>
-);
+}> = ({ path, icon, text, userName }) => {
+  const location = useLocation();
 
-export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName, location }) => (
+  return (
+    <NavLink
+      to={path}
+      className={({ isActive }: { isActive: boolean }) => {
+        if (path === '/feed') {
+          return location.pathname.startsWith(path)
+            ? styles.link_active
+            : styles.link;
+        }
+        return isActive ? styles.link_active : styles.link;
+      }}
+      state={{ from: location }}
+    >
+      {React.createElement(icon, {
+        type: (() => {
+          if (path === '/feed') {
+            return location.pathname.startsWith(path) ? 'primary' : 'disabled';
+          }
+          const isActive = location.pathname === path;
+          return isActive ? 'primary' : 'disabled';
+        })()
+      })}
+      <p className='text text_type_main-default ml-2'>
+        {path === '/profile' ? userName || text : text}
+      </p>
+    </NavLink>
+  );
+};
+
+export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
   <header className={styles.header}>
     <nav className={`${styles.menu} p-4`}>
       <div className={styles.menu_part_left}>
@@ -73,12 +74,11 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName, location }) => (
             path={route.path}
             icon={route.icon}
             text={route.text}
-            location={location}
           />
         ))}
       </div>
       <div className={styles.logo}>
-        <Link to='/' state={{ from: location }}>
+        <Link to='/'>
           <Logo className={styles.link_active} />
         </Link>
       </div>
@@ -88,7 +88,6 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName, location }) => (
           path={routes[2].path}
           icon={routes[2].icon}
           text={routes[2].text}
-          location={location}
           userName={userName}
         />
       </div>

@@ -1,9 +1,21 @@
 .wrap {
   margin: 0 auto;
   width: 640px;
+
 }
+
+.wrap_no_modal {
+    margin: 200px auto;
+    width: 640px;
+}
+
 .number {
   text-align: center;
+}
+
+.number_modal {
+    text-align: left;
+    margin-bottom: -10px;
 }
 
 .status {
