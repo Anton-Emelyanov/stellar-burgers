@@ -1,26 +1,20 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getIngredientsApi } from '@api';
-import {
-  IComponentsState,
-  TIngredient,
-  TConstructorIngredient
-} from '@utils-types';
+import { createSlice } from '@reduxjs/toolkit';
+import { TIngredient, TConstructorIngredient } from '@utils-types';
 import { RootState } from '../services/store';
-
-export const getIngredientsAsync = createAsyncThunk(
-  'ingredients/getIngredients',
-  async () => getIngredientsApi()
-);
 
 const createConstructorIngredient = (
   ingredient: TIngredient,
   id: string
 ): TConstructorIngredient => ({ ...ingredient, id });
 
-const initialState: IComponentsState = {
-  isFetching: false,
-  components: [],
-  errorMessage: null,
+interface ConstructorState {
+  constructorElements: {
+    bun: TConstructorIngredient | null;
+    ingredients: TConstructorIngredient[];
+  };
+}
+
+const initialState: ConstructorState = {
   constructorElements: {
     bun: null,
     ingredients: []
@@ -28,23 +22,17 @@ const initialState: IComponentsState = {
 };
 
 const burgerConstructorSlice = createSlice({
-  name: 'ingredients',
+  name: 'constructor',
   initialState,
   reducers: {
     setBurgerBun: (
       state,
       { payload }: { payload: { ingredient: TIngredient; id: string } }
     ) => {
-      const bun1 = createConstructorIngredient(
+      state.constructorElements.bun = createConstructorIngredient(
         payload.ingredient,
         `${payload.id}-top`
       );
-      const bun2 = createConstructorIngredient(
-        payload.ingredient,
-        `${payload.id}-bottom`
-      );
-
-      state.constructorElements.bun = bun1;
     },
     resetBurgerBun: (state) => {
       state.constructorElements.bun = null;
@@ -78,7 +66,7 @@ const burgerConstructorSlice = createSlice({
         payload < 1 ||
         payload >= state.constructorElements.ingredients.length
       ) {
-        return; // Выходим, если индекс недопустим
+        return;
       }
       const ingredients = state.constructorElements.ingredients;
       [ingredients[payload - 1], ingredients[payload]] = [
@@ -91,7 +79,7 @@ const burgerConstructorSlice = createSlice({
         payload < 0 ||
         payload >= state.constructorElements.ingredients.length - 1
       ) {
-        return; // Выходим, если индекс недопустим
+        return;
       }
       const ingredients = state.constructorElements.ingredients;
       [ingredients[payload], ingredients[payload + 1]] = [
@@ -99,27 +87,11 @@ const burgerConstructorSlice = createSlice({
         ingredients[payload]
       ];
     }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(getIngredientsAsync.pending, (state) => {
-      state.isFetching = true;
-    });
-    builder.addCase(getIngredientsAsync.rejected, (state, action) => {
-      state.isFetching = false;
-      state.errorMessage = action.error?.message ?? 'Unknown error';
-    });
-    builder.addCase(getIngredientsAsync.fulfilled, (state, { payload }) => {
-      state.isFetching = false;
-      state.components = payload;
-    });
   }
 });
 
-export const getIngredientsLoadingState = (state: RootState) =>
-  state.toppings.isFetching;
-export const getAllComponents = (state: RootState) => state.toppings.components;
 export const getConstructorElements = (state: RootState) =>
-  state.toppings.constructorElements;
+  state.burgerConstructor.constructorElements;
 
 export const {
   setBurgerBun,

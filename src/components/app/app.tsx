@@ -24,7 +24,7 @@ import { fetchUserAsync } from '../../slices/user-auth-slice';
 import {
   getIngredientsAsync,
   getIngredientsLoadingState
-} from '../../slices/burger-constructor-slice';
+} from '../../slices/ingredients-slice';
 import { useSelector, useDispatch } from '../../services/store';
 
 const App = () => {

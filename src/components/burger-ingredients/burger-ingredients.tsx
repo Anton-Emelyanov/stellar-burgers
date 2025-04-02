@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { TTabMode, TIngredient } from '@utils-types';
 import { BurgerIngredientsUI } from '@ui';
 import { useSelector } from '../../services/store';
-import { getAllComponents } from '../../slices/burger-constructor-slice';
+import { getAllComponents } from '../../slices/ingredients-slice';
 
 export const BurgerIngredients: FC = () => {
   const [buns, setBurgerBuns] = useState<TIngredient[]>([]);

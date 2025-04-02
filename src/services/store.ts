@@ -7,12 +7,14 @@ import {
 } from 'react-redux';
 
 import userAuthReducer from '../slices/user-auth-slice';
+import ingredientsReducer from '../slices/ingredients-slice';
 import burgerConstructorReducer from '../slices/burger-constructor-slice';
 import orderConfigReducer from '../slices/orders-config-slice';
 
 export const rootReducer = combineReducers({
   user: userAuthReducer,
-  toppings: burgerConstructorReducer,
+  ingredients: ingredientsReducer,
+  burgerConstructor: burgerConstructorReducer,
   orders: orderConfigReducer
 });
 

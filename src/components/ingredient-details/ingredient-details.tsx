@@ -3,7 +3,7 @@ import { Preloader } from '@ui';
 import { IngredientDetailsUI } from '@ui';
 import { useParams } from 'react-router-dom';
 import { useSelector } from '../../services/store';
-import { getAllComponents } from '../../slices/burger-constructor-slice';
+import { getAllComponents } from '../../slices/ingredients-slice';
 import styles from './ingredient-details.module.css';
 
 export const IngredientDetails: FC<{ isPrimary?: boolean }> = ({

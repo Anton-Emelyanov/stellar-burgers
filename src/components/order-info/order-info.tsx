@@ -4,7 +4,7 @@ import { Preloader } from '@ui';
 import { OrderInfoUI } from '@ui';
 import { TIngredient } from '@utils-types';
 import { useSelector, useDispatch } from '../../services/store';
-import { getAllComponents } from '../../slices/burger-constructor-slice';
+import { getAllComponents } from '../../slices/ingredients-slice';
 import {
   getOrderByNumberAsync,
   getOrderNumber
