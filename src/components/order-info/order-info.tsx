@@ -1,21 +1,23 @@
-import { FC, useMemo } from 'react';
-import { Preloader } from '../ui/preloader';
-import { OrderInfoUI } from '../ui/order-info';
+import { FC, useMemo, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { Preloader } from '@ui';
+import { OrderInfoUI } from '@ui';
 import { TIngredient } from '@utils-types';
+import { useSelector, useDispatch } from '../../services/store';
+import { getAllComponents } from '../../slices/ingredients-slice';
+import {
+  getOrderByNumberAsync,
+  getOrderNumber
+} from '../../slices/orders-config-slice';
 
-export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
-
-  const ingredients: TIngredient[] = [];
+export const OrderInfo: FC<{ isModal?: boolean }> = ({ isModal }) => {
+  const orderData = useSelector(getOrderNumber);
+  const ingredients = useSelector(getAllComponents);
+  const dispatch = useDispatch();
+  const { number } = useParams();
+  useEffect(() => {
+    dispatch(getOrderByNumberAsync(Number(number)));
+  }, []);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -29,21 +31,20 @@ export const OrderInfo: FC = () => {
 
     const ingredientsInfo = orderData.ingredients.reduce(
       (acc: TIngredientsWithCount, item) => {
-        if (!acc[item]) {
-          const ingredient = ingredients.find((ing) => ing._id === item);
-          if (ingredient) {
-            acc[item] = {
-              ...ingredient,
-              count: 1
-            };
-          }
-        } else {
-          acc[item].count++;
-        }
+        const ingredient = ingredients.find((ing) => ing._id === item);
+        if (!ingredient) return acc; // Если ингредиент не найден, пропускаем
 
+        if (!acc[item]) {
+          acc[item] = {
+            ...ingredient,
+            count: ingredient.type === 'bun' ? 2 : 1
+          };
+        } else {
+          acc[item].count += ingredient.type === 'bun' ? 2 : 1;
+        }
         return acc;
       },
-      {}
+      {} as TIngredientsWithCount
     );
 
     const total = Object.values(ingredientsInfo).reduce(
@@ -63,5 +64,5 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return <OrderInfoUI orderInfo={orderInfo} isModal={isModal} />;
 };
