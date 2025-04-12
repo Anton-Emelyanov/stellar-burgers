@@ -65,6 +65,7 @@ export type TFeedsResponse = TServerResponse<{
   orders: TOrder[];
   total: number;
   totalToday: number;
+  // success: boolean;
 }>;
 
 type TOrdersResponse = TServerResponse<{

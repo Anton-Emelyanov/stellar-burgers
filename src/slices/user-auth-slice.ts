@@ -68,7 +68,7 @@ export const logoutAsync = createAsyncThunk('user/logoutUser', async () => {
   return res;
 });
 
-const initialState: IAuthStatus = {
+export const initialState: IAuthStatus = {
   isInitialized: false,
   isFetching: false,
   user: null,
