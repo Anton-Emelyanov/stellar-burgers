@@ -12,7 +12,8 @@ import orderConfigSlice, {
   getFeedsAsync,
   getOrdersAsync,
   orderBurgerAsync,
-  getOrderByNumberAsync
+  getOrderByNumberAsync,
+  initialState
 } from './orders-config-slice';
 
 import { IOrderState, TOrder } from '@utils-types';
@@ -50,17 +51,6 @@ const mockFeedsResponse: TFeedsResponse = {
 };
 
 describe('Слайс заказов (orderConfigSlice)', () => {
-  const initialState: IOrderState = {
-    isFetching: false,
-    orderList: [],
-    orderNumber: null,
-    feedsResponse: null,
-    errorMessage: null,
-    successfulOrder: null,
-    isOrderSuccessful: null,
-    isOrderProcessing: false
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
   });

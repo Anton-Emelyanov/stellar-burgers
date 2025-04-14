@@ -25,7 +25,7 @@ export const getOrderByNumberAsync = createAsyncThunk(
   getOrderByNumberApi
 );
 
-const initialState: IOrderState = {
+export const initialState: IOrderState = {
   isFetching: false,
   orderList: [],
   orderNumber: null,

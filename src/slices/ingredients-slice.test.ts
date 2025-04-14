@@ -2,7 +2,8 @@ import ingredientsSlice, {
   getIngredientsAsync,
   getIngredientsLoadingState,
   getAllComponents,
-  IngredientsState
+  IngredientsState,
+  initialState
 } from './ingredients-slice';
 import { getIngredientsApi } from '@api';
 import { TIngredient } from '@utils-types';
@@ -41,12 +42,6 @@ const mockIngredients: TIngredient[] = [
 ];
 
 describe('Слайс ингредиентов', () => {
-  const initialState: IngredientsState = {
-    isFetching: false,
-    components: [],
-    errorMessage: null
-  };
-
   it('должен возвращать начальное состояние', () => {
     expect(ingredientsSlice(undefined, { type: '' })).toEqual(initialState);
   });

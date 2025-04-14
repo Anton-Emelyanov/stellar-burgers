@@ -1,25 +1,30 @@
+const SELECTORS = {
+  INGREDIENT: '[data-testid="ingredient"]',
+  MODAL_INGREDIENT: '[data-testid="modal-ingredient"]',
+  MODAL_CLOSE: '[data-testid="modal-close"]',
+  MODAL_OVERLAY: '[data-testid="modal-overlay"]',
+  CONSTRUCTOR: '[data-testid="constructor"]',
+};
+
 describe('Тесты получения ингредиентов через API', () => {
   beforeEach(() => {
-    // Загружаем моковые данные из файла fixtures
     cy.fixture('ingredients.json').then((mockData) => {
       cy.intercept('GET', '**/ingredients', {
         statusCode: 200,
-        body: mockData // Моковые данные из файла
+        body: mockData,
       }).as('getIngredients');
     });
 
-    // Переходим на страницу
     cy.visit('/');
   });
 
   it('Проверяет отображение ингредиентов на странице', () => {
-    // Ждём завершения запроса
     cy.wait('@getIngredients');
 
-    // видимость элемента
     cy.fixture('ingredients.json').then((mockData) => {
       mockData.data.forEach((ingredient) => {
-        cy.contains(ingredient.name).scrollIntoView().should('be.visible');
+        cy.contains(ingredient.name).as('ingredientItem'); // Используем alias
+        cy.get('@ingredientItem').scrollIntoView().should('be.visible');
       });
     });
   });
@@ -27,65 +32,61 @@ describe('Тесты получения ингредиентов через API'
 
 describe('Тесты модального окна ингредиента', () => {
   beforeEach(() => {
-    // Переход на страницу конструктора для начала тестов
     cy.visit('/');
   });
 
   it('Открытие модального окна ингредиента по клику', () => {
-    // Найдем элемент ингредиента, например, по data-testid
-    cy.get('[data-testid="ingredient"]').first().click();
+    // Создаем alias для первого ингредиента
+    cy.get(SELECTORS.INGREDIENT).first().as('firstIngredient');
 
-    // Проверка: модальное окно должно открыться
-    cy.get('[data-testid="modal-ingredient"]').should('be.visible');
+    // Кликаем по элементу через alias
+    cy.get('@firstIngredient').click();
+
+    // Проверяем модальное окно
+    cy.get(SELECTORS.MODAL_INGREDIENT).should('be.visible');
   });
 
   it('Закрытие модального окна по клику на крестик', () => {
-    // Открываем модальное окно
-    cy.get('[data-testid="ingredient"]').first().click();
+    cy.get(SELECTORS.INGREDIENT).first().as('firstIngredient');
+    cy.get('@firstIngredient').click();
 
-    // Нажимаем на крестик
-    cy.get('[data-testid="modal-close"]').click();
+    cy.get(SELECTORS.MODAL_CLOSE).as('closeButton'); // Alias для кнопки закрытия
+    cy.get('@closeButton').click();
 
-    // Проверка: модальное окно должно исчезнуть
-    cy.get('[data-testid="modal-ingredient"]').should('not.exist');
+    cy.get(SELECTORS.MODAL_INGREDIENT).should('not.exist');
   });
 
   it('Закрытие модального окна по клику на оверлей', () => {
-    // Открываем модальное окно
-    cy.get('[data-testid="ingredient"]').first().click();
+    cy.get(SELECTORS.INGREDIENT).first().as('firstIngredient');
+    cy.get('@firstIngredient').click();
 
-    // Нажимаем на область оверлея
-    cy.get('[data-testid="modal-overlay"]').click({ force: true });
+    cy.get(SELECTORS.MODAL_OVERLAY).as('overlay'); // Alias для области оверлея
+    cy.get('@overlay').click({ force: true });
 
-    // Проверка: модальное окно должно исчезнуть
-    cy.get('[data-testid="modal-ingredient"]').should('not.exist');
+    cy.get(SELECTORS.MODAL_INGREDIENT).should('not.exist');
   });
-
 });
 
 describe('Создание заказа', () => {
   beforeEach(() => {
-    // Подставляем моковые данные авторизации
     cy.fixture('user-data.json').then((userData) => {
       cy.intercept('GET', '**/auth/user', {
         statusCode: 200,
-        body: userData
+        body: userData,
       }).as('getUser');
     });
 
-    // Мокируем запрос к эндпоинту создания заказа
     cy.fixture('order-data.json').then((orderData) => {
       cy.intercept('POST', '**/orders', {
         statusCode: 200,
-        body: orderData
+        body: orderData,
       }).as('createOrder');
     });
 
-    // Мокируем запрос на ингредиенты
     cy.fixture('ingredients.json').then((ingredientsData) => {
       cy.intercept('GET', '**/ingredients', {
         statusCode: 200,
-        body: ingredientsData
+        body: ingredientsData,
       }).as('getIngredients');
     });
 
@@ -93,25 +94,35 @@ describe('Создание заказа', () => {
   });
 
   it('Оформляем заказ', () => {
-    // Нажимаем на кнопку добавления ингредиента
-    cy.contains('button', 'Добавить').first().click();
-    // Нажимаем кнопку оформления заказа
-    cy.get('button').contains('Оформить заказ').click();
-    // Ждём запрос на создание заказа
+    // Alias для кнопки добавления ингредиента и нажатие
+    cy.contains('button', 'Добавить').first().as('addButton');
+    cy.get('@addButton').click();
+
+    // Alias для кнопки оформления заказа
+    cy.get('button').contains('Оформить заказ').as('orderButton');
+    cy.get('@orderButton').click();
+
+    // Ждем запрос создания заказа
     cy.wait('@createOrder');
-    // Проверяем модальное окно с номером заказа
-    cy.get('[data-testid="modal-ingredient"]')
+
+    // Alias для модального окна заказа
+    cy.get(SELECTORS.MODAL_INGREDIENT).as('orderModal');
+
+    cy.get('@orderModal')
       .should('be.visible')
       .within(() => {
         cy.contains('Ваш заказ начали готовить').should('be.visible');
         cy.contains('71788').should('be.visible');
       });
-    // Закрываем модальное окно
-    cy.get('[data-testid="modal-close"]').click();
-    // Убедитесь, что модальное окно закрылось
-    cy.get('[data-testid="modal-ingredient"]').should('not.exist');
-    // Проверяем, что конструктор очищен
-    cy.get('[data-testid="constructor"]')
+
+    // Alias для кнопки закрытия модального окна
+    cy.get(SELECTORS.MODAL_CLOSE).as('closeButton');
+    cy.get('@closeButton').click();
+
+    cy.get('@orderModal').should('not.exist');
+
+    // Проверяем конструктор через alias
+    cy.get(SELECTORS.CONSTRUCTOR)
       .should('contain.text', 'Выберите булки')
       .and('contain.text', 'Выберите начинку');
   });

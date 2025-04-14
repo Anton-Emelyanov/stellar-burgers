@@ -7,7 +7,8 @@ import burgerConstructorSlice, {
   removeTopping,
   clearConstructor,
   reorderToppingUp,
-  reorderToppingDown
+  reorderToppingDown,
+  initialState
 } from './burger-constructor-slice';
 import { TIngredient, TConstructorIngredient } from '@utils-types';
 
@@ -29,13 +30,6 @@ describe('Проверяем Бургер конструктор', () => {
   const mockConstructorIngredient: TConstructorIngredient = {
     ...mockIngredient,
     id: '1'
-  };
-
-  const initialState = {
-    constructorElements: {
-      bun: null,
-      ingredients: []
-    }
   };
 
   it('должен вернуть исходное состояние', () => {

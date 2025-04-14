@@ -14,7 +14,7 @@ export interface IngredientsState {
   errorMessage: string | null;
 }
 
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
   isFetching: false,
   components: [],
   errorMessage: null
