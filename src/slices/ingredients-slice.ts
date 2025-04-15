@@ -8,13 +8,13 @@ export const getIngredientsAsync = createAsyncThunk(
   async () => getIngredientsApi()
 );
 
-interface IngredientsState {
+export interface IngredientsState {
   isFetching: boolean;
   components: TIngredient[];
   errorMessage: string | null;
 }
 
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
   isFetching: false,
   components: [],
   errorMessage: null
